@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hype Countdown!</title>
+    
+    <!-- Das Icon (Favicon) für den Browser-Tab (Sanduhr) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #12121c); /* Cooler dunkler Verlauf */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); /* Glas-Effekt */
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: #7289da;
+            text-shadow: 0 0 15px rgba(114, 137, 218, 0.5);
+        }
+
+        /* Das Raster für die Countdown-Zahlen */
+        .countdown {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .number {
+            font-size: 60px;
+            font-weight: bold;
+            background: #2c2f33;
+            padding: 20px 30px;
+            border-radius: 15px;
+            min-width: 80px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            color: #57f287; /* Leuchtendes Grün */
+            text-shadow: 0 0 10px rgba(87, 242, 135, 0.4);
+        }
+
+        .label {
+            margin-top: 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #99aab5;
+        }
+
+        /* Die Nachricht, wenn der Countdown abgelaufen ist */
+        #finished-message {
+            display: none;
+            font-size: 50px;
+            font-weight: bold;
+            color: #ed4245;
+            text-shadow: 0 0 20px rgba(237, 66, 69, 0.6);
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Anpassung für Handys */
+        @media (max-width: 600px) {
+            .countdown { gap: 10px; }
+            .number { font-size: 30px; padding: 15px; min-width: 40px; }
+            .label { font-size: 12px; }
+            .container { padding: 30px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="title">Warten auf den 15. November! 🚀</h1>
+        
+        <div class="countdown" id="countdown-timer">
+            <div class="time-box">
+                <span class="number" id="days">00</span>
+                <span class="label">Tage</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="hours">00</span>
+                <span class="label">Stunden</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Minuten</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Sekunden</span>
+            </div>
+        </div>
+
+        <div id="finished-message">ES IST SOWEIT! 🎉</div>
+    </div>
+
+    <script>
+        // Finde das aktuelle Jahr heraus
+        let currentYear = new Date().getFullYear();
+        
+        // Setze das Ziel-Datum auf den 15. November des aktuellen Jahres um 00:00 Uhr
+        // Monate in JavaScript fangen bei 0 an, deshalb ist November die 10!
+        let targetDate = new Date(currentYear, 10, 15, 0, 0, 0).getTime();
+
+        // Wenn der 15. November in diesem Jahr schon vorbei ist, nimm das nächste Jahr
+        if (new Date().getTime() > targetDate) {
+            targetDate = new Date(currentYear + 1, 10, 15, 0, 0, 0).getTime();
+        }
+
+        // Aktualisiere den Countdown jede Sekunde (1000 Millisekunden)
+        const timerInterval = setInterval(function() {
+            
+            // Die aktuelle Zeit holen
+            const now = new Date().getTime();
+            
+            // Die Zeitdifferenz zwischen jetzt und dem Ziel-Datum berechnen
+            const distance = targetDate - now;
+
+            // Zeitberechnungen für Tage, Stunden, Minuten und Sekunden
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Die Zahlen in das HTML schreiben (mit einer führenden Null, wenn die Zahl kleiner als 10 ist)
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            // Wenn der Countdown abgelaufen ist
+            if (distance < 0) {
+                clearInterval(timerInterval); // Stoppt den Timer
+                document.getElementById("countdown-timer").style.display = "none"; // Versteckt die Zahlen
+                document.getElementById("title").style.display = "none"; // Versteckt den Titel
+                document.getElementById("finished-message").style.display = "block"; // Zeigt die Endnachricht
+            }
+        }, 1000); // 1000ms = 1 Sekunde
+    </script>
+
+</body>
+</html>
